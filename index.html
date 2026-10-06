@@ -793,7 +793,7 @@ const REV = {
   spec: x => 'В спектр действия какой группы входит: «'+x+'»?'
 };
 function distractors(g, f, n){
-  const mine = allKeys(g), seen = new Set((g.excl||[]).map(key)), tiers = [GROUPS.filter(o=>o!==g&&o.sec===g.sec), GROUPS.filter(o=>o!==g&&o.sec!==g.sec)];
+  const mine = allKeys(g), seen = new Set((g.excl||[]).map(key)), pool = GROUPS.filter(o=>o!==g && (f!=='drugs' || o.dl===g.dl)), tiers = [pool.filter(o=>o.sec===g.sec), pool.filter(o=>o.sec!==g.sec)];
   const cand = [];
   for (const tier of tiers){
     shuffle(tier).forEach(o=>(o[f]||[]).forEach(x=>{ const k=key(x); if(mine.has(k)||seen.has(k)) return; seen.add(k); cand.push(x); }));
@@ -820,12 +820,12 @@ GROUPS.forEach(g=>{
       const correct = sample(list,nC), wrong = distractors(g,f,Math.max(3, Math.min(4, 6-nC)));
       return mkChoice(LABEL[f](g), correct, wrong, multi?'multi':'single', gexp(g,f));
     }];
-    if (f==='drugs' || REV[f]){
+    if (g.dl!=='группы' && (f==='drugs' || REV[f])){
       const usable = list.filter(x=> f==='drugs' ? GROUPS.filter(o2=>o2!==g&&(o2.drugs||[]).includes(x)).length<=1 : keyCount[f+'|'+key(x)]===1);
       if (usable.length) variants.push(()=>{
         const x = usable[rnd(usable.length)];
-        const wrongG = shuffle(GROUPS.filter(o2=>o2!==g && o2.sec===g.sec && (o2[f]||[]).length && !(o2[f]||[]).some(y=>key(y)===key(x))));
-        const more = shuffle(GROUPS.filter(o2=>o2!==g && o2.sec!==g.sec && !(o2[f]||[]).some(y=>key(y)===key(x))));
+        const wrongG = shuffle(GROUPS.filter(o2=>o2!==g && o2.dl===g.dl && o2.sec===g.sec && (o2[f]||[]).length && !(o2[f]||[]).some(y=>key(y)===key(x))));
+        const more = shuffle(GROUPS.filter(o2=>o2!==g && o2.dl===g.dl && o2.sec!==g.sec && !(o2[f]||[]).some(y=>key(y)===key(x))));
         const names = uniq([...wrongG,...(g.dl==='препараты'?more:[])].map(o2=>o2.name)).filter(n=>n!==g.name).slice(0,3);
         const text = f==='drugs' ? (g.dl==='препараты' ? 'К какой группе относится препарат «'+x+'»?' : 'К какому разделу относится: «'+x+'»?') : REV[f](x);
         return mkChoice(text,[g.name],names,'single',gexp(g,f));
