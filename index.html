@@ -111,6 +111,18 @@ select.good{border-color:var(--good);background:var(--good-bg)}select.bad{border
 .btn.t small,.btn.o small,.btn.m small{color:inherit;opacity:.9}
 .btn.t:hover:not(:disabled),.btn.o:hover:not(:disabled),.btn.m:hover:not(:disabled){filter:brightness(1.07)}
 .part .pb{flex-wrap:wrap;justify-content:flex-end}
+@media(max-width:600px){
+  #app{padding:12px 12px 48px}
+  .topic{grid-template-columns:36px minmax(0,1fr);grid-template-areas:"i t" "b b" "c c";gap:4px 10px;padding:12px}
+  .topic .ico{font-size:1.5rem}
+  .topic .cnt{white-space:normal;font-size:.8rem}
+  .part{grid-template-columns:minmax(0,1fr);grid-template-areas:"t" "g" "b";gap:6px}
+  .part .pb{justify-content:stretch;flex-wrap:nowrap}
+  .part .pb .btn{flex:1 1 0;justify-content:center;padding:9px 6px;font-size:.84rem;text-align:center;min-width:0}
+  .summary,.score{gap:12px;padding:12px}
+  .ring{width:72px;height:72px;border-width:6px}.ring.big{width:88px;height:88px}
+  .actions{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
